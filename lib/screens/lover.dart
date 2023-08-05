@@ -1,31 +1,25 @@
-import 'package:both_of_us/screens/lover.dart';
-import 'package:both_of_us/widgets/center_column.dart';
 import 'package:flutter/material.dart';
 
-class MeScreen extends StatefulWidget {
-  const MeScreen({super.key});
+import 'package:both_of_us/widgets/center_column.dart';
+
+class LoverScreen extends StatefulWidget {
+  LoverScreen({
+    super.key,
+    required this.meName,
+  });
+
+  String meName;
 
   @override
-  State<MeScreen> createState() => _MeScreenState();
+  State<LoverScreen> createState() => _LoverScreenState();
 }
 
-class _MeScreenState extends State<MeScreen> {
-  final _meNameController = TextEditingController();
+class _LoverScreenState extends State<LoverScreen> {
+  final _loverNameController = TextEditingController();
 
-  void _submittedMeName() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => LoverScreen(
-          meName: _meNameController.text,
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _meNameController.dispose();
-    super.dispose();
+  void _submittedLoverName() {
+    print(widget.meName);
+    print(_loverNameController.text);
   }
 
   @override
@@ -37,9 +31,9 @@ class _MeScreenState extends State<MeScreen> {
           SizedBox(
             width: 200,
             child: TextField(
-              controller: _meNameController,
+              controller: _loverNameController,
               decoration: const InputDecoration(
-                labelText: '당신의 이름은?',
+                labelText: '상대의 이름은?',
               ),
             ),
           ),
@@ -47,7 +41,7 @@ class _MeScreenState extends State<MeScreen> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: _submittedMeName,
+            onPressed: _submittedLoverName,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(
                 horizontal: 30,
