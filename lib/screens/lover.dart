@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:both_of_us/widgets/center_column.dart';
+import 'package:both_of_us/screens/date.dart';
 
 class LoverScreen extends StatefulWidget {
   LoverScreen({
@@ -18,8 +19,14 @@ class _LoverScreenState extends State<LoverScreen> {
   final _loverNameController = TextEditingController();
 
   void _submittedLoverName() {
-    print(widget.meName);
-    print(_loverNameController.text);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => DateScreen(
+          meName: widget.meName,
+          loverName: _loverNameController.text,
+        ),
+      ),
+    );
   }
 
   @override
