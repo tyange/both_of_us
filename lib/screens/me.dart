@@ -1,6 +1,7 @@
-import 'package:both_of_us/screens/lover.dart';
-import 'package:both_of_us/widgets/center_column.dart';
 import 'package:flutter/material.dart';
+
+import 'package:both_of_us/widgets/center_column.dart';
+import 'package:both_of_us/screens/lover.dart';
 
 class MeScreen extends StatefulWidget {
   const MeScreen({super.key});
