@@ -11,6 +11,10 @@ class MeScreen extends StatefulWidget {
 class _MeScreenState extends State<MeScreen> {
   final _meNameController = TextEditingController();
 
+  void _submittedMeName() {
+    print(_meNameController.text);
+  }
+
   @override
   void dispose() {
     _meNameController.dispose();
@@ -20,15 +24,32 @@ class _MeScreenState extends State<MeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CenterColumn(
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 50),
+          SizedBox(
+            width: 200,
             child: TextField(
               controller: _meNameController,
-              decoration: InputDecoration(labelText: '당신의 이름은?'),
+              decoration: const InputDecoration(
+                labelText: '당신의 이름은?',
+              ),
             ),
-          )
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+            onPressed: _submittedMeName,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 10,
+              ),
+              elevation: 5,
+            ),
+            child: const Text('저장'),
+          ),
         ],
       ),
     );
