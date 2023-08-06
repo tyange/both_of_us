@@ -14,6 +14,23 @@ class _MeScreenState extends State<MeScreen> {
   final _meNameController = TextEditingController();
 
   void _submittedMeName() {
+    if (_meNameController.text == '') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('에러'),
+          content: const Text('이름을 입력해주세요.'),
+          actions: [
+            TextButton(onPressed: () {
+              Navigator.of(context).pop();
+            }, child: const Text('OK')),
+          ],
+        ),
+      );
+
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => LoverScreen(
