@@ -41,7 +41,7 @@ class _DateScreenState extends State<DateScreen> {
         builder: (ctx) => ResultScreen(
           meName: widget.meName,
           loverName: widget.loverName,
-          date: _selectedDate.toString(),
+          date: (now.day - _selectedDate!.day + 1).toString(),
         ),
       ),
     );
