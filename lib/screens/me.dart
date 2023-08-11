@@ -14,16 +14,19 @@ class _MeScreenState extends State<MeScreen> {
   final _meNameController = TextEditingController();
 
   void _submittedMeName() {
-    if (_meNameController.text == '') {
+    if (_meNameController.text.isEmpty ||
+        _meNameController.text.trim().isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('에러'),
           content: const Text('이름을 입력해주세요.'),
           actions: [
-            TextButton(onPressed: () {
-              Navigator.of(context).pop();
-            }, child: const Text('OK')),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK')),
           ],
         ),
       );
