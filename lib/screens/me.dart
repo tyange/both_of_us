@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:both_of_us/widgets/center_column.dart';
+import 'package:both_of_us/widgets/validate_alert_dialog.dart';
 import 'package:both_of_us/screens/lover.dart';
+import 'package:both_of_us/widgets/name_text_field_area.dart';
 
 class MeScreen extends StatefulWidget {
   const MeScreen({super.key});
@@ -18,17 +19,7 @@ class _MeScreenState extends State<MeScreen> {
         _meNameController.text.trim().isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('에러'),
-          content: const Text('이름을 입력해주세요.'),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK')),
-          ],
-        ),
+        builder: (BuildContext context) => const ValidateAlertDialog(),
       );
 
       return;
@@ -53,32 +44,10 @@ class _MeScreenState extends State<MeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: CenterColumn(
-        children: [
-          SizedBox(
-            width: 200,
-            child: TextField(
-              controller: _meNameController,
-              decoration: const InputDecoration(
-                labelText: '당신의 이름은?',
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-            onPressed: _submittedMeName,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 10,
-              ),
-              elevation: 5,
-            ),
-            child: const Text('저장'),
-          ),
-        ],
+      body: NameTextFieldArea(
+        controller: _meNameController,
+        labelText: '당신의 이름은?',
+        submittedName: _submittedMeName,
       ),
     );
   }

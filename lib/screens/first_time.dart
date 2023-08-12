@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
 
-class DateScreen extends StatefulWidget {
-  DateScreen({
+class FirstTimeScreen extends StatefulWidget {
+  const FirstTimeScreen({
     super.key,
     required this.meName,
     required this.loverName,
   });
 
-  String meName;
-  String loverName;
+  final String meName;
+  final String loverName;
 
   @override
-  State<DateScreen> createState() {
-    return _DateScreenState();
+  State<FirstTimeScreen> createState() {
+    return _FirstTimeScreenState();
   }
 }
 
-class _DateScreenState extends State<DateScreen> {
+class _FirstTimeScreenState extends State<FirstTimeScreen> {
   DateTime? _selectedDate;
 
   void _presentDatePicker() async {
@@ -50,6 +50,7 @@ class _DateScreenState extends State<DateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CenterColumn(
         children: [
           ElevatedButton(

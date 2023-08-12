@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:both_of_us/widgets/center_column.dart';
-import 'package:both_of_us/screens/date.dart';
+import 'package:both_of_us/widgets/validate_alert_dialog.dart';
+import 'package:both_of_us/screens/first_time.dart';
+import 'package:both_of_us/widgets/name_text_field_area.dart';
 
 class LoverScreen extends StatefulWidget {
-  LoverScreen({
+  const LoverScreen({
     super.key,
     required this.meName,
   });
 
-  String meName;
+  final String meName;
 
   @override
   State<LoverScreen> createState() => _LoverScreenState();
@@ -19,9 +20,19 @@ class _LoverScreenState extends State<LoverScreen> {
   final _loverNameController = TextEditingController();
 
   void _submittedLoverName() {
+    if (_loverNameController.text.isEmpty ||
+        _loverNameController.text.trim().isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => const ValidateAlertDialog(),
+      );
+
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => DateScreen(
+        builder: (ctx) => FirstTimeScreen(
           meName: widget.meName,
           loverName: _loverNameController.text,
         ),
@@ -30,35 +41,19 @@ class _LoverScreenState extends State<LoverScreen> {
   }
 
   @override
+  void dispose() {
+    _loverNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: CenterColumn(
-        children: [
-          SizedBox(
-            width: 200,
-            child: TextField(
-              controller: _loverNameController,
-              decoration: const InputDecoration(
-                labelText: '상대의 이름은?',
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-            onPressed: _submittedLoverName,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 10,
-              ),
-              elevation: 5,
-            ),
-            child: const Text('저장'),
-          ),
-        ],
+      body: NameTextFieldArea(
+        controller: _loverNameController,
+        labelText: '상대의 이름은?',
+        submittedName: _submittedLoverName,
       ),
     );
   }
