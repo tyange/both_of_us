@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
@@ -22,12 +23,13 @@ class FirstTimeScreen extends StatefulWidget {
 class _FirstTimeScreenState extends State<FirstTimeScreen> {
   DateTime? _selectedDate;
 
-  void _presentDatePicker() async {
-    final now = DateTime.now();
+  final now = DateTime.now();
+
+  void _presentDatePicker(DateTime? selectedDate) async {
     final firstDate = DateTime(now.year - 100, now.month, now.day);
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: selectedDate ?? now,
       firstDate: firstDate,
       lastDate: now,
     );
@@ -35,7 +37,9 @@ class _FirstTimeScreenState extends State<FirstTimeScreen> {
     setState(() {
       _selectedDate = pickedDate;
     });
+  }
 
+  void _navigateResultScreen() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => ResultScreen(
@@ -53,10 +57,28 @@ class _FirstTimeScreenState extends State<FirstTimeScreen> {
       resizeToAvoidBottomInset: false,
       body: CenterColumn(
         children: [
-          ElevatedButton(
-            onPressed: _presentDatePicker,
-            child: const Text('처음 만난 날은?'),
-          ),
+          if (_selectedDate == null)
+            ElevatedButton(
+              onPressed: () {
+                _presentDatePicker(null);
+              },
+              child: const Text('처음 만난 날은?'),
+            )
+          else ...[
+            OutlinedButton(
+              onPressed: () {
+                _presentDatePicker(_selectedDate);
+              },
+              child: Text(
+                DateFormat('yyyy-MM-dd').format(_selectedDate!).toString(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: _navigateResultScreen,
+              child: const Text('기념일 확인하기'),
+            )
+          ]
         ],
       ),
     );
