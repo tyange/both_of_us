@@ -45,7 +45,7 @@ class _FirstTimeScreenState extends State<FirstTimeScreen> {
         builder: (ctx) => ResultScreen(
           meName: widget.meName,
           loverName: widget.loverName,
-          date: (now.day - _selectedDate!.day + 1).toString(),
+          firstDay: _selectedDate!,
         ),
       ),
     );

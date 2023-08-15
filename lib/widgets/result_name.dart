@@ -13,7 +13,7 @@ class ResultName extends StatelessWidget {
     return Text(
       name,
       style: const TextStyle(
-        fontSize: 50,
+        fontSize: 30,
       ),
     );
   }
