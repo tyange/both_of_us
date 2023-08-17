@@ -1,3 +1,4 @@
+import 'package:both_of_us/models/anniversary.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -17,34 +18,58 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  List<Map<String, dynamic>> _allAnniversaries = [];
+  List<Anniversary> _allAnniversaries = [];
 
   int _getDays(DateTime day) {
-    return day.difference(DateTime.now()).inDays + 1;
+    return day.difference(DateTime.now()).inDays;
   }
 
-  List<Map<String, dynamic>> _getAnniversaries(
-      DateTime baseDay, int iterationCount, bool isSubtract) {
-    List<Map<String, dynamic>> anniversaries = [];
+  List<Anniversary> _getPastAnniversaries(DateTime baseDay, int diff) {
+    List<Anniversary> anniversaries = [];
 
-    for (int i = 1; i <= 1 + iterationCount; i++) {
-      DateTime hundredAnniversary = isSubtract
-          ? baseDay.subtract(Duration(days: 100 * i))
-          : baseDay.add(Duration(days: 100 * i));
+    DateTime today = DateTime.now();
 
-      anniversaries.add({
-        "date": hundredAnniversary,
-        "isFirstDay": false,
-      });
+    DateTime currentAnniversary = baseDay;
+    while (currentAnniversary.isBefore(today)) {
+      anniversaries
+          .add(Anniversary(date: currentAnniversary, isFirstDay: false));
+      currentAnniversary = currentAnniversary.add(Duration(days: 100));
     }
 
     return anniversaries;
   }
 
-  String _displayDays(DateTime date) {
-    int days = date.difference(DateTime.now()).inDays;
+  // List<Anniversary> _getFutureAnniversaries(
+  //   DateTime baseDay,
+  //   int iterationCount,
+  // ) {
+  //   List<Anniversary> anniversaries = [];
+  //   DateTime today = DateTime.now();
 
-    if (days > 0) {
+  //   DateTime currentAnniversary = today;
+
+  //   while (currentAnniversary.isBefore(baseDay)) {
+  //     currentAnniversary = currentAnniversary.add(Duration(days: 100));
+  //   }
+
+  //   if (currentAnniversary == baseDay || currentAnniversary.isAfter(baseDay)) {
+  //     print("다가올 기념일을 찾을 수 없습니다.");
+  //     return [];
+  //   }
+
+  //   while (currentAnniversary.isBefore(baseDay)) {
+  //     anniversaries
+  //         .add(Anniversary(date: currentAnniversary, isFirstDay: false));
+  //     currentAnniversary = currentAnniversary.add(Duration(days: 100));
+  //   }
+
+  //   return anniversaries;
+  // }
+
+  String _displayDays(DateTime date, DateTime firstDay) {
+    int days = date.difference(firstDay).inDays;
+
+    if (days <= 0) {
       return (days + 1).toString();
     }
 
@@ -55,33 +80,26 @@ class _ResultScreenState extends State<ResultScreen> {
   void initState() {
     super.initState();
 
-    int difference = _getDays(widget.firstDay) - 1;
+    int difference = _getDays(widget.firstDay);
 
-    Map<String, dynamic> firstDayAnniversary = {
-      'date': widget.firstDay,
-      'isFirstDay': true,
-    };
+    List<Anniversary> pastAnniversaries =
+        _getPastAnniversaries(widget.firstDay, -difference);
 
-    if (difference <= -300) {
-      _allAnniversaries = [
-        ..._getAnniversaries(widget.firstDay, 2, true),
-        firstDayAnniversary,
-        ..._getAnniversaries(widget.firstDay, 2, false)
-      ];
-    } else if (difference <= -200) {
-      _allAnniversaries = [
-        ..._getAnniversaries(widget.firstDay, 1, true),
-        firstDayAnniversary,
-        ..._getAnniversaries(widget.firstDay, 2, false)
-      ];
-    } else {
-      _allAnniversaries = [
-        firstDayAnniversary,
-        ..._getAnniversaries(widget.firstDay, 2, false)
-      ];
-    }
+    Anniversary firstDayAnniversary = Anniversary(
+      date: widget.firstDay,
+      isFirstDay: true,
+    );
 
-    _allAnniversaries.sort((a, b) => a['date'].compareTo(b['date']));
+    // List<Anniversary> futureAnniversaries =
+    //     _getFutureAnniversaries(widget.firstDay, 2);
+
+    pastAnniversaries.sort((a, b) => a.date.compareTo(b.date));
+
+    _allAnniversaries = [
+      ...pastAnniversaries,
+      firstDayAnniversary,
+      // ...futureAnniversaries,
+    ];
   }
 
   @override
@@ -91,11 +109,24 @@ class _ResultScreenState extends State<ResultScreen> {
         itemExtent: 250,
         children: [
           for (final anniversary in _allAnniversaries)
-            Text(
-              _displayDays(anniversary['date']),
-              style: TextStyle(
-                color: anniversary['isFirstDay'] ? Colors.red : Colors.black,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  anniversary.date.toString(),
+                  style: TextStyle(
+                    color: anniversary.isFirstDay ? Colors.red : Colors.black,
+                  ),
+                ),
+                Text(
+                  anniversary.isFirstDay
+                      ? _displayDays(DateTime.now(), widget.firstDay)
+                      : _displayDays(anniversary.date, widget.firstDay),
+                  style: TextStyle(
+                    color: anniversary.isFirstDay ? Colors.red : Colors.black,
+                  ),
+                )
+              ],
             )
         ],
       ),
