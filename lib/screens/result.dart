@@ -24,47 +24,41 @@ class _ResultScreenState extends State<ResultScreen> {
     return day.difference(DateTime.now()).inDays;
   }
 
-  List<Anniversary> _getPastAnniversaries(DateTime baseDay, int diff) {
+  List<Anniversary> _getPastAnniversaries(DateTime firstDay, int diff) {
     List<Anniversary> anniversaries = [];
 
     DateTime today = DateTime.now();
 
-    DateTime currentAnniversary = baseDay;
-    while (currentAnniversary.isBefore(today)) {
+    DateTime targetAnniversary = firstDay;
+    while (targetAnniversary.isBefore(today)) {
       anniversaries
-          .add(Anniversary(date: currentAnniversary, isFirstDay: false));
-      currentAnniversary = currentAnniversary.add(Duration(days: 100));
+          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
+      targetAnniversary = targetAnniversary.add(Duration(days: 100));
     }
 
     return anniversaries;
   }
 
-  // List<Anniversary> _getFutureAnniversaries(
-  //   DateTime baseDay,
-  //   int iterationCount,
-  // ) {
-  //   List<Anniversary> anniversaries = [];
-  //   DateTime today = DateTime.now();
+  List<Anniversary> _getFutureAnniversaries(
+    DateTime baseDay,
+    int iterationCount,
+  ) {
+    List<Anniversary> anniversaries = [];
+    DateTime today = DateTime.now();
 
-  //   DateTime currentAnniversary = today;
+    DateTime nextAnniversary =
+        today.add(Duration(days: (100 - today.day % 100) % 100));
 
-  //   while (currentAnniversary.isBefore(baseDay)) {
-  //     currentAnniversary = currentAnniversary.add(Duration(days: 100));
-  //   }
+    DateTime targetAnniversary = nextAnniversary;
 
-  //   if (currentAnniversary == baseDay || currentAnniversary.isAfter(baseDay)) {
-  //     print("다가올 기념일을 찾을 수 없습니다.");
-  //     return [];
-  //   }
+    for (int i = 1; i < iterationCount; i++) {
+      anniversaries
+          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
+      targetAnniversary = targetAnniversary.add(Duration(days: 100));
+    }
 
-  //   while (currentAnniversary.isBefore(baseDay)) {
-  //     anniversaries
-  //         .add(Anniversary(date: currentAnniversary, isFirstDay: false));
-  //     currentAnniversary = currentAnniversary.add(Duration(days: 100));
-  //   }
-
-  //   return anniversaries;
-  // }
+    return anniversaries;
+  }
 
   String _displayDays(DateTime date, DateTime firstDay) {
     int days = date.difference(firstDay).inDays;
@@ -90,8 +84,8 @@ class _ResultScreenState extends State<ResultScreen> {
       isFirstDay: true,
     );
 
-    // List<Anniversary> futureAnniversaries =
-    //     _getFutureAnniversaries(widget.firstDay, 2);
+    List<Anniversary> futureAnniversaries =
+        _getFutureAnniversaries(widget.firstDay, 2);
 
     pastAnniversaries.sort((a, b) => a.date.compareTo(b.date));
 
