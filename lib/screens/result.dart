@@ -24,20 +24,41 @@ class _ResultScreenState extends State<ResultScreen> {
     return day.difference(DateTime.now()).inDays;
   }
 
+  bool _isLeapYear(int year) {
+    if (year % 4 == 0) {
+      if (year % 100 == 0) {
+        if (year % 400 == 0) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
   Set<Anniversary> _getPastAnniversaries(
       DateTime firstDay, int diff, int interval) {
     List<Anniversary> anniversaries = [];
 
     DateTime today = DateTime.now();
 
-    DateTime targetHundredAnniversary = firstDay;
+    DateTime targetAnniversary = firstDay;
 
-    while (targetHundredAnniversary.isBefore(today)) {
+    while (targetAnniversary.isBefore(today)) {
       anniversaries
-          .add(Anniversary(date: targetHundredAnniversary, isFirstDay: false));
+          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
 
-      targetHundredAnniversary =
-          targetHundredAnniversary.add(Duration(days: interval));
+      targetAnniversary = targetAnniversary.add(
+        Duration(
+          days: interval == 365 && _isLeapYear(targetAnniversary.year + 1)
+              ? interval + 1
+              : interval,
+        ),
+      );
     }
 
     return Set<Anniversary>.from(anniversaries);
