@@ -24,19 +24,23 @@ class _ResultScreenState extends State<ResultScreen> {
     return day.difference(DateTime.now()).inDays;
   }
 
-  List<Anniversary> _getPastAnniversaries(DateTime firstDay, int diff) {
+  Set<Anniversary> _getPastAnniversaries(
+      DateTime firstDay, int diff, int interval) {
     List<Anniversary> anniversaries = [];
 
     DateTime today = DateTime.now();
 
-    DateTime targetAnniversary = firstDay;
-    while (targetAnniversary.isBefore(today)) {
+    DateTime targetHundredAnniversary = firstDay;
+
+    while (targetHundredAnniversary.isBefore(today)) {
       anniversaries
-          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
-      targetAnniversary = targetAnniversary.add(const Duration(days: 100));
+          .add(Anniversary(date: targetHundredAnniversary, isFirstDay: false));
+
+      targetHundredAnniversary =
+          targetHundredAnniversary.add(Duration(days: interval));
     }
 
-    return anniversaries;
+    return Set<Anniversary>.from(anniversaries);
   }
 
   List<Anniversary> _getFutureAnniversaries(
@@ -93,8 +97,26 @@ class _ResultScreenState extends State<ResultScreen> {
 
     int difference = _getDays(widget.firstDay);
 
-    List<Anniversary> pastAnniversaries =
-        _getPastAnniversaries(widget.firstDay, -difference);
+    List<Anniversary> pastAnniversaries() {
+      Set<Anniversary> pastYearAnniversary =
+          _getPastAnniversaries(widget.firstDay, -difference, 365);
+      Set<Anniversary> pastHundredAnniversary =
+          _getPastAnniversaries(widget.firstDay, -difference, 100);
+      Set<Anniversary> intersection =
+          pastHundredAnniversary.intersection(pastYearAnniversary);
+
+      for (Anniversary anniversary in intersection) {
+        pastYearAnniversary.remove(anniversary);
+      }
+
+      pastYearAnniversary.addAll(pastHundredAnniversary);
+
+      List<Anniversary> pastAnniversaries = pastYearAnniversary.toList();
+
+      pastAnniversaries.sort((a, b) => a.date.compareTo(b.date));
+
+      return pastAnniversaries;
+    }
 
     Anniversary currentDay = Anniversary(
       date: widget.firstDay,
@@ -104,10 +126,8 @@ class _ResultScreenState extends State<ResultScreen> {
     List<Anniversary> futureAnniversaries =
         _getFutureAnniversaries(widget.firstDay, 2);
 
-    pastAnniversaries.sort((a, b) => a.date.compareTo(b.date));
-
     _allAnniversaries = [
-      ...pastAnniversaries,
+      ...pastAnniversaries(),
       currentDay,
       ...futureAnniversaries,
     ];
