@@ -33,7 +33,7 @@ class _ResultScreenState extends State<ResultScreen> {
     while (targetAnniversary.isBefore(today)) {
       anniversaries
           .add(Anniversary(date: targetAnniversary, isFirstDay: false));
-      targetAnniversary = targetAnniversary.add(Duration(days: 100));
+      targetAnniversary = targetAnniversary.add(const Duration(days: 100));
     }
 
     return anniversaries;
@@ -46,15 +46,32 @@ class _ResultScreenState extends State<ResultScreen> {
     List<Anniversary> anniversaries = [];
     DateTime today = DateTime.now();
 
-    DateTime nextAnniversary =
-        today.add(Duration(days: (100 - today.day % 100) % 100));
+    int diff = today.difference(baseDay).inDays;
 
-    DateTime targetAnniversary = nextAnniversary;
+    DateTime nextAnniversary;
+
+    if (diff % 100 == 0) {
+      DateTime afterHundred = today.add(const Duration(days: 100));
+
+      nextAnniversary = afterHundred;
+    } else {
+      DateTime afterRestOfTheDay = today.add(
+        Duration(
+          days: 100 - (diff % 100),
+        ),
+      );
+
+      nextAnniversary = afterRestOfTheDay;
+    }
+
+    anniversaries.add(Anniversary(date: nextAnniversary, isFirstDay: false));
 
     for (int i = 1; i < iterationCount; i++) {
-      anniversaries
-          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
-      targetAnniversary = targetAnniversary.add(Duration(days: 100));
+      nextAnniversary = nextAnniversary.add(
+        const Duration(days: 100),
+      );
+
+      anniversaries.add(Anniversary(date: nextAnniversary, isFirstDay: false));
     }
 
     return anniversaries;
@@ -79,7 +96,7 @@ class _ResultScreenState extends State<ResultScreen> {
     List<Anniversary> pastAnniversaries =
         _getPastAnniversaries(widget.firstDay, -difference);
 
-    Anniversary firstDayAnniversary = Anniversary(
+    Anniversary currentDay = Anniversary(
       date: widget.firstDay,
       isFirstDay: true,
     );
@@ -91,8 +108,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
     _allAnniversaries = [
       ...pastAnniversaries,
-      firstDayAnniversary,
-      // ...futureAnniversaries,
+      currentDay,
+      ...futureAnniversaries,
     ];
   }
 
