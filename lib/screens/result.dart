@@ -89,14 +89,24 @@ class _ResultScreenState extends State<ResultScreen> {
       nextAnniversary = afterRestOfTheDay;
     }
 
-    anniversaries.add(Anniversary(date: nextAnniversary, isFirstDay: false));
+    anniversaries.add(
+      Anniversary(
+        date: nextAnniversary,
+        isFirstDay: false,
+      ),
+    );
 
     for (int i = 1; i < iterationCount; i++) {
       nextAnniversary = nextAnniversary.add(
         const Duration(days: 100),
       );
 
-      anniversaries.add(Anniversary(date: nextAnniversary, isFirstDay: false));
+      anniversaries.add(
+        Anniversary(
+          date: nextAnniversary,
+          isFirstDay: false,
+        ),
+      );
     }
 
     return anniversaries;
