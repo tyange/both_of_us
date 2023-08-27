@@ -19,9 +19,11 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   List<Anniversary> _allAnniversaries = [];
+  Anniversary? _lastAnniversary;
 
-  int _getDays(DateTime day) {
-    return day.difference(DateTime.now()).inDays;
+  DateTime get nowDate {
+    return DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day);
   }
 
   bool _isLeapYear(int year) {
@@ -40,25 +42,31 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  Set<Anniversary> _getAnniversaries(
-      DateTime firstDay, int interval, int iterationTime) {
+  bool _isAnniversary(DateTime firstDay, DateTime currentDate) {
+    Duration diff = firstDay.difference(currentDate);
+    int diffInDays = diff.inDays;
+
+    bool isHundredAnniversary = diffInDays % 100 == 0;
+    bool isYearAnniversary =
+        firstDay.month == currentDate.month && firstDay.day == currentDate.day;
+
+    return isHundredAnniversary || isYearAnniversary;
+  }
+
+  Set<Anniversary> _getAnniversaries(DateTime firstDay, int interval) {
     List<Anniversary> anniversaries = [];
 
-    DateTime targetDate = DateTime(
-      DateTime.now().year + iterationTime,
-      DateTime.now().month,
-      DateTime.now().day,
-    );
+    DateTime targetAnniversaryDate = firstDay;
 
-    DateTime targetAnniversary = firstDay;
+    while (targetAnniversaryDate.isBefore(nowDate)) {
+      anniversaries.add(Anniversary(
+        date: targetAnniversaryDate,
+        isCurrentDay: false,
+      ));
 
-    while (targetAnniversary.isBefore(targetDate)) {
-      anniversaries
-          .add(Anniversary(date: targetAnniversary, isFirstDay: false));
-
-      targetAnniversary = targetAnniversary.add(
+      targetAnniversaryDate = targetAnniversaryDate.add(
         Duration(
-          days: interval == 365 && _isLeapYear(targetAnniversary.year + 1)
+          days: interval == 365 && _isLeapYear(targetAnniversaryDate.year + 1)
               ? interval + 1
               : interval,
         ),
@@ -66,6 +74,20 @@ class _ResultScreenState extends State<ResultScreen> {
     }
 
     return Set<Anniversary>.from(anniversaries);
+  }
+
+  void _getFutureAnniversaries() {
+    List<Anniversary> anniversaries = [];
+
+    DateTime nowDate = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    );
+
+    DateTime targetAnniversaryDate = _lastAnniversary!.date;
+
+    print(targetAnniversaryDate);
   }
 
   String _displayDays(DateTime date, DateTime firstDay) {
@@ -78,45 +100,76 @@ class _ResultScreenState extends State<ResultScreen> {
     return days.toString();
   }
 
+  List<Anniversary> _calculateAnniversaries(
+    Set<Anniversary> yearAnniversaries,
+    Set<Anniversary> hundredAnniversaries,
+  ) {
+    Set<Anniversary> yearAnniversary = yearAnniversaries;
+    Set<Anniversary> hundredAnniversary = hundredAnniversaries;
+    Set<Anniversary> intersection =
+        hundredAnniversary.intersection(yearAnniversary);
+
+    for (Anniversary anniversary in intersection) {
+      yearAnniversary.remove(anniversary);
+    }
+
+    yearAnniversary.addAll(hundredAnniversary);
+
+    List<Anniversary> calculatedAnniversaries = yearAnniversary.toList();
+
+    return calculatedAnniversaries;
+  }
+
+  void _onSelectedItemChangedHandler() {
+    _getFutureAnniversaries();
+  }
+
   @override
   void initState() {
     super.initState();
 
     List<Anniversary> anniversaries() {
-      Set<Anniversary> yearAnniversary =
-          _getAnniversaries(widget.firstDay, 365, 2);
-      Set<Anniversary> hundredAnniversary =
-          _getAnniversaries(widget.firstDay, 100, 2);
-      Set<Anniversary> intersection =
-          hundredAnniversary.intersection(yearAnniversary);
+      Set<Anniversary> yearAnniversaries =
+          _getAnniversaries(widget.firstDay, 365);
+      Set<Anniversary> hundredAnniversaries =
+          _getAnniversaries(widget.firstDay, 100);
 
-      for (Anniversary anniversary in intersection) {
-        yearAnniversary.remove(anniversary);
-      }
-
-      yearAnniversary.addAll(hundredAnniversary);
-
-      List<Anniversary> calculatedAnniversaries = yearAnniversary.toList();
-
-      Anniversary currentDay = Anniversary(
-        date: DateTime.now(),
-        isFirstDay: true,
-      );
-
-      calculatedAnniversaries.add(currentDay);
+      List<Anniversary> calculatedAnniversaries =
+          _calculateAnniversaries(yearAnniversaries, hundredAnniversaries);
 
       calculatedAnniversaries.sort((a, b) => a.date.compareTo(b.date));
+
+      Anniversary currentDay = Anniversary(
+        date: nowDate,
+        isCurrentDay: true,
+      );
+      calculatedAnniversaries.add(currentDay);
+
+      if (_isAnniversary(widget.firstDay, currentDay.date)) {
+        _lastAnniversary =
+            calculatedAnniversaries[calculatedAnniversaries.length - 1];
+      } else {
+        _lastAnniversary =
+            calculatedAnniversaries[calculatedAnniversaries.length - 2];
+      }
 
       return calculatedAnniversaries;
     }
 
-    _allAnniversaries = [...anniversaries()];
+    List<Anniversary> allAnniversaries = anniversaries();
+
+    _allAnniversaries = [...allAnniversaries];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListWheelScrollView(
+        onSelectedItemChanged: (value) {
+          if (_allAnniversaries.length == value + 1) {
+            _onSelectedItemChangedHandler();
+          }
+        },
         itemExtent: 250,
         children: [
           for (final anniversary in _allAnniversaries)
@@ -126,13 +179,13 @@ class _ResultScreenState extends State<ResultScreen> {
                 Text(
                   anniversary.date.toString(),
                   style: TextStyle(
-                    color: anniversary.isFirstDay ? Colors.red : Colors.black,
+                    color: anniversary.isCurrentDay ? Colors.red : Colors.black,
                   ),
                 ),
                 Text(
                   _displayDays(anniversary.date, widget.firstDay),
                   style: TextStyle(
-                    color: anniversary.isFirstDay ? Colors.red : Colors.black,
+                    color: anniversary.isCurrentDay ? Colors.red : Colors.black,
                   ),
                 )
               ],

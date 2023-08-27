@@ -1,9 +1,9 @@
 class Anniversary {
   Anniversary({
     required this.date,
-    required this.isFirstDay,
+    required this.isCurrentDay,
   });
 
   final DateTime date;
-  final bool isFirstDay;
+  final bool isCurrentDay;
 }
