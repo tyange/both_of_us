@@ -42,17 +42,14 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  Set<Anniversary> _getAnniversaries(
+  Set<DateTime> _getAnniversaries(
       DateTime beforeDate, DateTime firstDay, int interval) {
-    List<Anniversary> anniversaries = [];
+    List<DateTime> anniversaries = [];
 
     DateTime targetAnniversaryDate = firstDay;
 
     while (targetAnniversaryDate.isBefore(beforeDate)) {
-      anniversaries.add(Anniversary(
-          date: targetAnniversaryDate,
-          isCurrentDay: false,
-          interval: interval));
+      anniversaries.add(targetAnniversaryDate);
 
       targetAnniversaryDate = targetAnniversaryDate.add(
         Duration(
@@ -63,7 +60,7 @@ class _ResultScreenState extends State<ResultScreen> {
       );
     }
 
-    return Set<Anniversary>.from(anniversaries);
+    return Set.from(anniversaries);
   }
 
   String _displayDays(DateTime date, DateTime firstDay) {
@@ -76,48 +73,42 @@ class _ResultScreenState extends State<ResultScreen> {
     return days.toString();
   }
 
-  List<Anniversary> _calculateAnniversaries(
-    Set<Anniversary> yearAnniversaries,
-    Set<Anniversary> hundredAnniversaries,
-  ) {
-    Set<Anniversary> yearAnniversary = yearAnniversaries;
-    Set<Anniversary> hundredAnniversary = hundredAnniversaries;
-    Set<Anniversary> intersection =
-        hundredAnniversary.intersection(yearAnniversary);
-
-    for (Anniversary anniversary in intersection) {
-      yearAnniversary.remove(anniversary);
-    }
-
-    yearAnniversary.addAll(hundredAnniversary);
-
-    List<Anniversary> calculatedAnniversaries = yearAnniversary.toList();
-
-    return calculatedAnniversaries;
-  }
-
   List<Anniversary> _getAnniversaryList(
       DateTime targetDate, DateTime firstDay) {
-    Set<Anniversary> yearAnniversaries =
+    Set<DateTime> yearAnniversaries =
         _getAnniversaries(targetDate, firstDay, 365);
-    Set<Anniversary> hundredAnniversaries =
+    Set<DateTime> hundredAnniversaries =
         _getAnniversaries(targetDate, firstDay, 100);
 
-    List<Anniversary> calculatedAnniversaries =
-        _calculateAnniversaries(yearAnniversaries, hundredAnniversaries);
+    List<DateTime> calculatedAnniversariesDate =
+        yearAnniversaries.union(hundredAnniversaries).toList();
 
-    if (targetDate != nowDate) {
-      Anniversary currentDayAnniversary = calculatedAnniversaries
-          .firstWhere((element) => element.date == nowDate);
-      int currentDayAnniversaryIndex =
-          calculatedAnniversaries.indexOf(currentDayAnniversary);
-      calculatedAnniversaries[currentDayAnniversaryIndex].isCurrentDay = true;
+    List<Anniversary> anniversaries = [];
+
+    for (DateTime anniversaryDate in calculatedAnniversariesDate) {
+      anniversaries.add(Anniversary(
+        date: anniversaryDate,
+        isCurrentDay: anniversaryDate == nowDate,
+      ));
     }
 
-    // calculatedAnniversaries.removeAt(0);
-    calculatedAnniversaries.sort((a, b) => a.date.compareTo(b.date));
+    anniversaries.add(Anniversary(
+      date: firstDay,
+      isCurrentDay: false,
+    ));
 
-    return calculatedAnniversaries;
+    if (targetDate != nowDate) {
+      Anniversary currentDayAnniversary =
+          anniversaries.firstWhere((element) => element.date == nowDate);
+      int currentDayAnniversaryIndex =
+          anniversaries.indexOf(currentDayAnniversary);
+      anniversaries[currentDayAnniversaryIndex].isCurrentDay = true;
+    }
+
+    anniversaries.removeAt(0);
+    anniversaries.sort((a, b) => a.date.compareTo(b.date));
+
+    return anniversaries;
   }
 
   void _onSelectedItemChangedHandler() {
