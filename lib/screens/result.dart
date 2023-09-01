@@ -19,7 +19,7 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   List<Anniversary> _allAnniversaries = [];
-  Anniversary? _lastAnniversary;
+  DateTime? _targetDate;
 
   DateTime get nowDate {
     return DateTime(
@@ -42,27 +42,17 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  bool _isAnniversary(DateTime firstDay, DateTime currentDate) {
-    Duration diff = firstDay.difference(currentDate);
-    int diffInDays = diff.inDays;
-
-    bool isHundredAnniversary = diffInDays % 100 == 0;
-    bool isYearAnniversary =
-        firstDay.month == currentDate.month && firstDay.day == currentDate.day;
-
-    return isHundredAnniversary || isYearAnniversary;
-  }
-
-  Set<Anniversary> _getAnniversaries(DateTime firstDay, int interval) {
+  Set<Anniversary> _getAnniversaries(
+      DateTime beforeDate, DateTime firstDay, int interval) {
     List<Anniversary> anniversaries = [];
 
     DateTime targetAnniversaryDate = firstDay;
 
-    while (targetAnniversaryDate.isBefore(nowDate)) {
+    while (targetAnniversaryDate.isBefore(beforeDate)) {
       anniversaries.add(Anniversary(
-        date: targetAnniversaryDate,
-        isCurrentDay: false,
-      ));
+          date: targetAnniversaryDate,
+          isCurrentDay: false,
+          interval: interval));
 
       targetAnniversaryDate = targetAnniversaryDate.add(
         Duration(
@@ -74,20 +64,6 @@ class _ResultScreenState extends State<ResultScreen> {
     }
 
     return Set<Anniversary>.from(anniversaries);
-  }
-
-  void _getFutureAnniversaries() {
-    List<Anniversary> anniversaries = [];
-
-    DateTime nowDate = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    );
-
-    DateTime targetAnniversaryDate = _lastAnniversary!.date;
-
-    print(targetAnniversaryDate);
   }
 
   String _displayDays(DateTime date, DateTime firstDay) {
@@ -120,44 +96,50 @@ class _ResultScreenState extends State<ResultScreen> {
     return calculatedAnniversaries;
   }
 
+  List<Anniversary> _getAnniversaryList(
+      DateTime targetDate, DateTime firstDay) {
+    Set<Anniversary> yearAnniversaries =
+        _getAnniversaries(targetDate, firstDay, 365);
+    Set<Anniversary> hundredAnniversaries =
+        _getAnniversaries(targetDate, firstDay, 100);
+
+    List<Anniversary> calculatedAnniversaries =
+        _calculateAnniversaries(yearAnniversaries, hundredAnniversaries);
+
+    if (targetDate != nowDate) {
+      Anniversary currentDayAnniversary = calculatedAnniversaries
+          .firstWhere((element) => element.date == nowDate);
+      int currentDayAnniversaryIndex =
+          calculatedAnniversaries.indexOf(currentDayAnniversary);
+      calculatedAnniversaries[currentDayAnniversaryIndex].isCurrentDay = true;
+    }
+
+    // calculatedAnniversaries.removeAt(0);
+    calculatedAnniversaries.sort((a, b) => a.date.compareTo(b.date));
+
+    return calculatedAnniversaries;
+  }
+
   void _onSelectedItemChangedHandler() {
-    _getFutureAnniversaries();
+    List<Anniversary> futureAnniversaries =
+        _getAnniversaryList(_targetDate!, widget.firstDay);
+
+    _targetDate =
+        DateTime(_targetDate!.year + 1, _targetDate!.month, _targetDate!.day);
+
+    setState(() {
+      _allAnniversaries = [...futureAnniversaries];
+    });
   }
 
   @override
   void initState() {
     super.initState();
 
-    List<Anniversary> anniversaries() {
-      Set<Anniversary> yearAnniversaries =
-          _getAnniversaries(widget.firstDay, 365);
-      Set<Anniversary> hundredAnniversaries =
-          _getAnniversaries(widget.firstDay, 100);
+    List<Anniversary> allAnniversaries =
+        _getAnniversaryList(nowDate, widget.firstDay);
 
-      List<Anniversary> calculatedAnniversaries =
-          _calculateAnniversaries(yearAnniversaries, hundredAnniversaries);
-
-      calculatedAnniversaries.sort((a, b) => a.date.compareTo(b.date));
-
-      Anniversary currentDay = Anniversary(
-        date: nowDate,
-        isCurrentDay: true,
-      );
-      calculatedAnniversaries.add(currentDay);
-
-      if (_isAnniversary(widget.firstDay, currentDay.date)) {
-        _lastAnniversary =
-            calculatedAnniversaries[calculatedAnniversaries.length - 1];
-      } else {
-        _lastAnniversary =
-            calculatedAnniversaries[calculatedAnniversaries.length - 2];
-      }
-
-      return calculatedAnniversaries;
-    }
-
-    List<Anniversary> allAnniversaries = anniversaries();
-
+    _targetDate = DateTime(nowDate.year + 1, nowDate.month, nowDate.day);
     _allAnniversaries = [...allAnniversaries];
   }
 
