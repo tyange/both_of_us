@@ -18,6 +18,8 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  late FixedExtentScrollController controller;
+
   List<Anniversary> _allAnniversaries = [];
   DateTime? _targetDate;
 
@@ -44,12 +46,12 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Set<DateTime> _getAnniversaries(
       DateTime beforeDate, DateTime firstDay, int interval) {
-    List<DateTime> anniversaries = [];
+    List<DateTime> anniversariesDate = [];
 
     DateTime targetAnniversaryDate = firstDay;
 
     while (targetAnniversaryDate.isBefore(beforeDate)) {
-      anniversaries.add(targetAnniversaryDate);
+      anniversariesDate.add(targetAnniversaryDate);
 
       targetAnniversaryDate = targetAnniversaryDate.add(
         Duration(
@@ -60,7 +62,9 @@ class _ResultScreenState extends State<ResultScreen> {
       );
     }
 
-    return Set.from(anniversaries);
+    anniversariesDate.add(nowDate);
+
+    return Set.from(anniversariesDate);
   }
 
   String _displayDays(DateTime date, DateTime firstDay) {
@@ -92,20 +96,6 @@ class _ResultScreenState extends State<ResultScreen> {
       ));
     }
 
-    anniversaries.add(Anniversary(
-      date: firstDay,
-      isCurrentDay: false,
-    ));
-
-    if (targetDate != nowDate) {
-      Anniversary currentDayAnniversary =
-          anniversaries.firstWhere((element) => element.date == nowDate);
-      int currentDayAnniversaryIndex =
-          anniversaries.indexOf(currentDayAnniversary);
-      anniversaries[currentDayAnniversaryIndex].isCurrentDay = true;
-    }
-
-    anniversaries.removeAt(0);
     anniversaries.sort((a, b) => a.date.compareTo(b.date));
 
     return anniversaries;
@@ -123,9 +113,28 @@ class _ResultScreenState extends State<ResultScreen> {
     });
   }
 
+  void _jumpToCurrentDay() {
+    int currentDayAnniversaryIndex =
+        _allAnniversaries.indexWhere((element) => element.isCurrentDay);
+
+    if (currentDayAnniversaryIndex == -1) {
+      return;
+    }
+
+    controller.animateTo(
+      currentDayAnniversaryIndex * 100,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+      curve: Curves.linear,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+
+    controller = FixedExtentScrollController();
 
     List<Anniversary> allAnniversaries =
         _getAnniversaryList(nowDate, widget.firstDay);
@@ -135,33 +144,65 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: const Icon(Icons.menu),
+        title: const Text('both of us'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            tooltip: 'Open shopping cart',
+            onPressed: () {
+              _jumpToCurrentDay();
+            },
+          ),
+        ],
+      ),
       body: ListWheelScrollView(
         onSelectedItemChanged: (value) {
           if (_allAnniversaries.length == value + 1) {
             _onSelectedItemChangedHandler();
           }
         },
-        itemExtent: 250,
+        itemExtent: 100,
+        squeeze: 0.5,
+        physics: const FixedExtentScrollPhysics(),
+        controller: controller,
         children: [
           for (final anniversary in _allAnniversaries)
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  anniversary.date.toString(),
-                  style: TextStyle(
-                    color: anniversary.isCurrentDay ? Colors.red : Colors.black,
-                  ),
+            Container(
+              width: 300,
+              child: Card(
+                elevation: 10,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      anniversary.date.toString(),
+                      style: TextStyle(
+                        color: anniversary.isCurrentDay
+                            ? Colors.red
+                            : Colors.black,
+                      ),
+                    ),
+                    Text(
+                      _displayDays(anniversary.date, widget.firstDay),
+                      style: TextStyle(
+                        color: anniversary.isCurrentDay
+                            ? Colors.red
+                            : Colors.black,
+                      ),
+                    )
+                  ],
                 ),
-                Text(
-                  _displayDays(anniversary.date, widget.firstDay),
-                  style: TextStyle(
-                    color: anniversary.isCurrentDay ? Colors.red : Colors.black,
-                  ),
-                )
-              ],
+              ),
             )
         ],
       ),
