@@ -1,4 +1,5 @@
 import 'package:both_of_us/models/anniversary.dart';
+import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -65,16 +66,6 @@ class _ResultScreenState extends State<ResultScreen> {
     anniversariesDate.add(nowDate);
 
     return Set.from(anniversariesDate);
-  }
-
-  String _displayDays(DateTime date, DateTime firstDay) {
-    int days = date.difference(firstDay).inDays;
-
-    if (days <= 0) {
-      return (days + 1).toString();
-    }
-
-    return days.toString();
   }
 
   List<Anniversary> _getAnniversaryList(
@@ -177,32 +168,9 @@ class _ResultScreenState extends State<ResultScreen> {
         controller: controller,
         children: [
           for (final anniversary in _allAnniversaries)
-            Container(
-              width: 300,
-              child: Card(
-                elevation: 10,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      anniversary.date.toString(),
-                      style: TextStyle(
-                        color: anniversary.isCurrentDay
-                            ? Colors.red
-                            : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      _displayDays(anniversary.date, widget.firstDay),
-                      style: TextStyle(
-                        color: anniversary.isCurrentDay
-                            ? Colors.red
-                            : Colors.black,
-                      ),
-                    )
-                  ],
-                ),
-              ),
+            AnniversaryCard(
+              anniversary: anniversary,
+              firstDay: widget.firstDay,
             )
         ],
       ),
