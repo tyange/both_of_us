@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:both_of_us/models/anniversary.dart';
-import 'package:intl/intl.dart';
 
 class AnniversaryCard extends StatelessWidget {
   const AnniversaryCard({
