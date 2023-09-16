@@ -2,6 +2,11 @@ import 'package:both_of_us/models/anniversary.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
 
+Map<String, int> anniversaryInterval = {
+  "hundred": 100,
+  "year": 365,
+};
+
 class ResultScreen extends StatefulWidget {
   const ResultScreen({
     super.key,
@@ -70,10 +75,10 @@ class _ResultScreenState extends State<ResultScreen> {
 
   List<Anniversary> _getAnniversaryList(
       DateTime targetDate, DateTime firstDay) {
+    Set<DateTime> hundredAnniversaries = _getAnniversaries(
+        targetDate, firstDay, anniversaryInterval['hundred']!);
     Set<DateTime> yearAnniversaries =
-        _getAnniversaries(targetDate, firstDay, 365);
-    Set<DateTime> hundredAnniversaries =
-        _getAnniversaries(targetDate, firstDay, 100);
+        _getAnniversaries(targetDate, firstDay, anniversaryInterval['year']!);
 
     List<DateTime> calculatedAnniversariesDate =
         yearAnniversaries.union(hundredAnniversaries).toList();
