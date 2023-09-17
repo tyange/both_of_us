@@ -7,6 +7,8 @@ Map<String, int> anniversaryInterval = {
   "year": 365,
 };
 
+double extent = 120.0;
+
 class ResultScreen extends StatefulWidget {
   const ResultScreen({
     super.key,
@@ -88,7 +90,10 @@ class _ResultScreenState extends State<ResultScreen> {
     for (DateTime anniversaryDate in calculatedAnniversariesDate) {
       anniversaries.add(Anniversary(
         date: anniversaryDate,
+        isFirstDay: anniversaryDate == widget.firstDay,
         isCurrentDay: anniversaryDate == nowDate,
+        isYearAnniversary: anniversaryDate.month == nowDate.month &&
+            anniversaryDate.day == nowDate.day,
       ));
     }
 
@@ -118,7 +123,7 @@ class _ResultScreenState extends State<ResultScreen> {
     }
 
     controller.animateTo(
-      currentDayAnniversaryIndex * 100,
+      currentDayAnniversaryIndex * extent,
       duration: const Duration(
         milliseconds: 500,
       ),
@@ -167,7 +172,7 @@ class _ResultScreenState extends State<ResultScreen> {
             _onSelectedItemChangedHandler();
           }
         },
-        itemExtent: 100,
+        itemExtent: extent,
         squeeze: 0.5,
         physics: const FixedExtentScrollPhysics(),
         controller: controller,
