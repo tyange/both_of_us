@@ -76,29 +76,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: JosefinSans
+    - family: SingleDay
       fonts:
-        - asset: assets/fonts/JosefinSans-Thin.ttf
-        - asset: assets/fonts/JosefinSans-ThinItalic.ttf
-          weight: 100
-        - asset: assets/fonts/JosefinSans-ExtraLight.ttf
-        - asset: assets/fonts/JosefinSans-ExtraLightItalic.ttf
-          weight: 200
-        - asset: assets/fonts/JosefinSans-Light.ttf
-        - asset: assets/fonts/JosefinSans-LightItalic.ttf
-          weight: 300
-        - asset: assets/fonts/JosefinSans-Regular.ttf
-        - asset: assets/fonts/JosefinSans-italic.ttf
-          weight: 400
-        - asset: assets/fonts/JosefinSans-Medium.ttf
-        - asset: assets/fonts/JosefinSans-MediumItalic.ttf
-          weight: 500
-        - asset: assets/fonts/JosefinSans-SemiBold.ttf
-        - asset: assets/fonts/JosefinSans-SemiBoldItalic.ttf
-          weight: 600
-        - asset: assets/fonts/JosefinSans-Bold.ttf
-        - asset: assets/fonts/JosefinSans-BoldItalic.ttf
-          weight: 700
+        - asset: assets/fonts/SingleDay-Regular.ttf
     
   #
   # For details regarding fonts from package dependencies,

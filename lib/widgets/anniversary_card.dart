@@ -18,14 +18,20 @@ class AnniversaryCard extends StatelessWidget {
   final Anniversary anniversary;
   final DateTime firstDay;
 
-  String _displayDays(DateTime date, DateTime firstDay) {
-    int days = date.difference(firstDay).inDays;
+  String _displayDays(Anniversary anniversary, DateTime firstDay) {
+    int days = anniversary.date.difference(firstDay).inDays;
 
     if (days == 0) {
       return 'FIRST DAY';
     }
 
-    return days.toString();
+    if (anniversary.isYearAnniversary) {
+      final years = anniversary.date.year - firstDay.year;
+
+      return '$years주년';
+    }
+
+    return '$days일';
   }
 
   Color _displayColor(Anniversary anniversary) {
@@ -57,8 +63,8 @@ class AnniversaryCard extends StatelessWidget {
             Text(
               DateFormat('yyyy - MM - dd').format(anniversary.date),
               style: const TextStyle(
-                fontFamily: 'JosefinSans',
-                fontSize: 18,
+                fontFamily: 'SingleDay',
+                fontSize: 20,
               ),
             ),
             const SizedBox(
@@ -66,14 +72,14 @@ class AnniversaryCard extends StatelessWidget {
             ),
             Text(
               _displayDays(
-                anniversary.date,
+                anniversary,
                 firstDay,
               ),
               style: const TextStyle(
-                fontFamily: 'JosefinSans',
-                fontSize: 20,
+                fontFamily: 'SingleDay',
+                fontSize: 22,
               ),
-            )
+            ),
           ],
         ),
       ),
