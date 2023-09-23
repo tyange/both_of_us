@@ -47,5 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>using calendar</string>
+	<key>NSContactsUsageDescription</key>
+	<string>using calendar</string>
 </dict>
 </plist>

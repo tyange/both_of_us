@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
+
 class Anniversary {
   Anniversary({
     required this.date,
-    required this.isFirstDay,
-    required this.isCurrentDay,
-    required this.isYearAnniversary,
+    required this.displayTitle,
+    required this.bgColor,
   });
 
   final DateTime date;
-  bool isFirstDay;
-  bool isCurrentDay;
-  bool isYearAnniversary;
+  String displayTitle;
+  Color bgColor;
 }

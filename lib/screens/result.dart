@@ -2,12 +2,17 @@ import 'package:both_of_us/models/anniversary.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
 
-Map<String, int> anniversaryInterval = {
+const Map<String, int> anniversaryInterval = {
   "hundred": 100,
   "year": 365,
 };
 
-double extent = 120.0;
+const double extent = 120.0;
+
+const int firstDayColorHex = 0xffFBF0B2;
+const int currentDayColorHex = 0xffFFC7EA;
+const int yearAnniversaryColorHex = 0xffD8B4F8;
+const int hundredAnniversaryColorHex = 0xffCAEDFF;
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({
@@ -75,6 +80,42 @@ class _ResultScreenState extends State<ResultScreen> {
     return Set.from(anniversariesDate);
   }
 
+  String _displayDays(DateTime anniversaryDate, DateTime firstDay) {
+    int days = anniversaryDate.difference(firstDay).inDays;
+
+    if (days == 0) {
+      return 'FIRST DAY';
+    }
+
+    bool isYearAnniversary = anniversaryDate.month == widget.firstDay.month &&
+        anniversaryDate.day == widget.firstDay.day;
+
+    if (isYearAnniversary) {
+      final years = anniversaryDate.year - firstDay.year;
+
+      return '$years주년';
+    }
+
+    return '$days일';
+  }
+
+  Color _displayColor(DateTime anniversaryDate) {
+    if (anniversaryDate == widget.firstDay) {
+      return const Color(firstDayColorHex);
+    }
+
+    if (anniversaryDate == nowDate) {
+      return const Color(currentDayColorHex);
+    }
+
+    if (anniversaryDate.month == widget.firstDay.month &&
+        anniversaryDate.day == widget.firstDay.day) {
+      return const Color(yearAnniversaryColorHex);
+    } else {
+      return const Color(hundredAnniversaryColorHex);
+    }
+  }
+
   List<Anniversary> _getAnniversaryList(
       DateTime targetDate, DateTime firstDay) {
     Set<DateTime> hundredAnniversaries = _getAnniversaries(
@@ -89,12 +130,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
     for (DateTime anniversaryDate in calculatedAnniversariesDate) {
       anniversaries.add(Anniversary(
-        date: anniversaryDate,
-        isFirstDay: anniversaryDate == widget.firstDay,
-        isCurrentDay: anniversaryDate == nowDate,
-        isYearAnniversary: anniversaryDate.month == nowDate.month &&
-            anniversaryDate.day == nowDate.day,
-      ));
+          date: anniversaryDate,
+          displayTitle: _displayDays(anniversaryDate, firstDay),
+          bgColor: _displayColor(anniversaryDate)));
     }
 
     anniversaries.sort((a, b) => a.date.compareTo(b.date));
@@ -116,7 +154,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   void _jumpToCurrentDay() {
     int currentDayAnniversaryIndex =
-        _allAnniversaries.indexWhere((element) => element.isCurrentDay);
+        _allAnniversaries.indexWhere((element) => element.date == nowDate);
 
     if (currentDayAnniversaryIndex == -1) {
       return;
@@ -180,7 +218,6 @@ class _ResultScreenState extends State<ResultScreen> {
           for (final anniversary in _allAnniversaries)
             AnniversaryCard(
               anniversary: anniversary,
-              firstDay: widget.firstDay,
             )
         ],
       ),
