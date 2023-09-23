@@ -1,6 +1,7 @@
 import 'package:both_of_us/models/anniversary.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 const Map<String, int> anniversaryInterval = {
   "hundred": 100,
@@ -13,6 +14,7 @@ const int firstDayColorHex = 0xffFBF0B2;
 const int currentDayColorHex = 0xffFFC7EA;
 const int yearAnniversaryColorHex = 0xffD8B4F8;
 const int hundredAnniversaryColorHex = 0xffCAEDFF;
+const int actionButtonColorHex = 0xffF1EFEF;
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({
@@ -152,6 +154,16 @@ class _ResultScreenState extends State<ResultScreen> {
     });
   }
 
+  void _jumpToFirstDay() {
+    controller.animateTo(
+      0,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+      curve: Curves.linear,
+    );
+  }
+
   void _jumpToCurrentDay() {
     int currentDayAnniversaryIndex =
         _allAnniversaries.indexWhere((element) => element.date == nowDate);
@@ -191,17 +203,29 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.menu),
-        title: const Text('both of us'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            tooltip: 'Open shopping cart',
-            onPressed: () {
-              _jumpToCurrentDay();
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        spacing: 20,
+        childPadding: const EdgeInsets.all(8),
+        backgroundColor: const Color(currentDayColorHex),
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.settings_backup_restore),
+            label: '다시 설정하기',
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.first_page_rounded),
+            label: '1일',
+            onTap: () {
+              _jumpToFirstDay();
             },
           ),
+          SpeedDialChild(
+              child: const Icon(Icons.today),
+              label: '오늘',
+              onTap: () {
+                _jumpToCurrentDay();
+              }),
         ],
       ),
       body: ListWheelScrollView(
