@@ -51,6 +51,12 @@ class _LoverScreenState extends State<LoverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 100,
+        elevation: 5,
+        title: const Text('둘이서'),
+      ),
       resizeToAvoidBottomInset: false,
       body: NameTextFieldArea(
         controller: _loverNameController,
