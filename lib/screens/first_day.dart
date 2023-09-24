@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
@@ -39,7 +40,23 @@ class _FirstDayScreenState extends State<FirstDayScreen> {
     });
   }
 
-  void _navigateResultScreen() {
+  void _navigateResultScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(
+      "bou_me_name",
+      widget.meName,
+    );
+    prefs.setString(
+      "bou_lover_name",
+      widget.loverName,
+    );
+    prefs.setString(
+      "bou_first_day",
+      DateFormat('yyyy-MM-dd').format(_selectedDate!),
+    );
+
+    if (!context.mounted) return;
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => ResultScreen(

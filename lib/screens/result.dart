@@ -5,6 +5,7 @@ import 'package:both_of_us/screens/intro.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const Map<String, int> anniversaryInterval = {
   "hundred": 100,
@@ -184,7 +185,13 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  void _navigateIntroScreen() {
+  void _navigateIntroScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.clear();
+
+    if (!context.mounted) return;
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => const IntroScreen(),
