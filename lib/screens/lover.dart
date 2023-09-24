@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:both_of_us/widgets/validate_alert_dialog.dart';
-import 'package:both_of_us/screens/first_time.dart';
+import 'package:both_of_us/screens/first_day.dart';
 import 'package:both_of_us/widgets/name_text_field_area.dart';
 
 class LoverScreen extends StatefulWidget {
@@ -24,7 +24,9 @@ class _LoverScreenState extends State<LoverScreen> {
         _loverNameController.text.trim().isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => const ValidateAlertDialog(),
+        builder: (BuildContext context) => const ValidateAlertDialog(
+          alertMessage: '이름을 입력해주세요.',
+        ),
       );
 
       return;
@@ -32,7 +34,7 @@ class _LoverScreenState extends State<LoverScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => FirstTimeScreen(
+        builder: (ctx) => FirstDayScreen(
           meName: widget.meName,
           loverName: _loverNameController.text,
         ),

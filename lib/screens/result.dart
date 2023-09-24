@@ -1,4 +1,5 @@
 import 'package:both_of_us/models/anniversary.dart';
+import 'package:both_of_us/screens/edit.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -181,6 +182,18 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
+  void _navigateToEditScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => EditScreen(
+          meName: widget.meName,
+          loverName: widget.loverName,
+          firstDay: widget.firstDay,
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -212,6 +225,9 @@ class _ResultScreenState extends State<ResultScreen> {
           SpeedDialChild(
             child: const Icon(Icons.settings_backup_restore),
             label: '다시 설정하기',
+            onTap: () {
+              _navigateToEditScreen();
+            },
           ),
           SpeedDialChild(
             child: const Icon(Icons.first_page_rounded),

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ValidateAlertDialog extends StatelessWidget {
-  const ValidateAlertDialog({super.key});
+  const ValidateAlertDialog({
+    super.key,
+    required this.alertMessage,
+  });
+
+  final String alertMessage;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('에러'),
-      content: const Text('이름을 입력해주세요.'),
+      content: Text(alertMessage),
       actions: [
         TextButton(
             onPressed: () {

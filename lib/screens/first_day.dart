@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
 
-class FirstTimeScreen extends StatefulWidget {
-  const FirstTimeScreen({
+class FirstDayScreen extends StatefulWidget {
+  const FirstDayScreen({
     super.key,
     required this.meName,
     required this.loverName,
@@ -15,12 +15,12 @@ class FirstTimeScreen extends StatefulWidget {
   final String loverName;
 
   @override
-  State<FirstTimeScreen> createState() {
-    return _FirstTimeScreenState();
+  State<FirstDayScreen> createState() {
+    return _FirstDayScreenState();
   }
 }
 
-class _FirstTimeScreenState extends State<FirstTimeScreen> {
+class _FirstDayScreenState extends State<FirstDayScreen> {
   DateTime? _selectedDate;
 
   final now = DateTime.now();

@@ -19,14 +19,6 @@ class AnniversaryCard extends StatelessWidget {
       startDate: anniversaryDate,
       endDate: anniversaryDate,
       allDay: false,
-      // iosParams: IOSParams(
-      //   reminder: Duration(minutes: 40),
-      //   url: "http://example.com",
-      // ),
-      // androidParams: AndroidParams(
-      //   emailInvites: ["test@example.com"],
-      // ),
-      // recurrence: recurrence,
     );
   }
 

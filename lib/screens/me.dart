@@ -19,7 +19,9 @@ class _MeScreenState extends State<MeScreen> {
         _meNameController.text.trim().isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => const ValidateAlertDialog(),
+        builder: (BuildContext context) => const ValidateAlertDialog(
+          alertMessage: '이름을 입력해주세요.',
+        ),
       );
 
       return;
