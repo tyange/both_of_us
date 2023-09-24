@@ -1,11 +1,12 @@
-import 'package:both_of_us/main.dart';
-import 'package:both_of_us/models/anniversary.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
 import 'package:both_of_us/screens/edit.dart';
 import 'package:both_of_us/screens/intro.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:both_of_us/models/anniversary.dart';
 
 const Map<String, int> anniversaryInterval = {
   "hundred": 100,
