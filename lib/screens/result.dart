@@ -1,3 +1,4 @@
+import 'package:both_of_us/main.dart';
 import 'package:both_of_us/models/anniversary.dart';
 import 'package:both_of_us/screens/edit.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
@@ -216,6 +217,29 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        elevation: 5,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(widget.meName),
+            const SizedBox(
+              width: 10,
+            ),
+            const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(widget.loverName),
+          ],
+        ),
+      ),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         spacing: 20,
