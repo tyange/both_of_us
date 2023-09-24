@@ -52,10 +52,12 @@ class _MeScreenState extends State<MeScreen> {
         title: const Text('둘이서'),
       ),
       resizeToAvoidBottomInset: false,
-      body: NameTextFieldArea(
-        controller: _meNameController,
-        labelText: '당신의 이름은?',
-        submittedName: _submittedMeName,
+      body: SafeArea(
+        child: NameTextFieldArea(
+          controller: _meNameController,
+          labelText: '당신의 이름은?',
+          submittedName: _submittedMeName,
+        ),
       ),
     );
   }

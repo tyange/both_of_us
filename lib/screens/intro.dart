@@ -16,15 +16,16 @@ class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 100,
+        elevation: 5,
+        automaticallyImplyLeading: false,
+        title: const Text('둘이서'),
+      ),
       body: SafeArea(
         child: CenterColumn(
           children: [
-            const Text(
-              '우리 둘',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {

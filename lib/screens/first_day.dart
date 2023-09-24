@@ -61,31 +61,33 @@ class _FirstDayScreenState extends State<FirstDayScreen> {
         title: const Text('둘이서'),
       ),
       resizeToAvoidBottomInset: false,
-      body: CenterColumn(
-        children: [
-          if (_selectedDate == null)
-            ElevatedButton(
-              onPressed: () {
-                _presentDatePicker(null);
-              },
-              child: const Text('처음 만난 날은?'),
-            )
-          else ...[
-            OutlinedButton(
-              onPressed: () {
-                _presentDatePicker(_selectedDate);
-              },
-              child: Text(
-                DateFormat('yyyy-MM-dd').format(_selectedDate!).toString(),
+      body: SafeArea(
+        child: CenterColumn(
+          children: [
+            if (_selectedDate == null)
+              ElevatedButton(
+                onPressed: () {
+                  _presentDatePicker(null);
+                },
+                child: const Text('처음 만난 날은?'),
+              )
+            else ...[
+              OutlinedButton(
+                onPressed: () {
+                  _presentDatePicker(_selectedDate);
+                },
+                child: Text(
+                  DateFormat('yyyy-MM-dd').format(_selectedDate!).toString(),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _navigateResultScreen,
-              child: const Text('기념일 확인하기'),
-            )
-          ]
-        ],
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: _navigateResultScreen,
+                child: const Text('기념일 확인하기'),
+              )
+            ]
+          ],
+        ),
       ),
     );
   }

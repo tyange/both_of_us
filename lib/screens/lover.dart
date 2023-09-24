@@ -58,10 +58,12 @@ class _LoverScreenState extends State<LoverScreen> {
         title: const Text('둘이서'),
       ),
       resizeToAvoidBottomInset: false,
-      body: NameTextFieldArea(
-        controller: _loverNameController,
-        labelText: '상대의 이름은?',
-        submittedName: _submittedLoverName,
+      body: SafeArea(
+        child: NameTextFieldArea(
+          controller: _loverNameController,
+          labelText: '상대의 이름은?',
+          submittedName: _submittedLoverName,
+        ),
       ),
     );
   }
