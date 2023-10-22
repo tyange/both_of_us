@@ -1,16 +1,8 @@
 # both_of_us
 
-A new Flutter project.
+> 100일 단위, 연 단위 기념일을 찾아주는 웹 앱 (with Flutter & Firebase)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter 기반의 웹 앱입니다.
+- 이름과 기념일을 입력하면 해당 기념일의 100일 단위, 연 단위의 기념일을 목록으로 만들어 보여줍니다.
+- 무한 스크롤이 적용되어 있습니다.
+- Firebase로 배포되었습니다.
