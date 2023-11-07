@@ -199,6 +199,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   }
 
   void _navigateIntroScreen() {
+    ref.read(userInfoProvider.notifier).resetUserInfo();
     _clearPrefs();
 
     if (!context.mounted) return;

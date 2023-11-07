@@ -28,6 +28,14 @@ class UserInfoNotifier extends StateNotifier<UserInfo> {
     userInfo.firstDay = date;
     state = userInfo;
   }
+
+  void resetUserInfo() {
+    state = UserInfo(
+      meName: null,
+      loverName: null,
+      firstDay: null,
+    );
+  }
 }
 
 final userInfoProvider = StateNotifierProvider<UserInfoNotifier, UserInfo>(
