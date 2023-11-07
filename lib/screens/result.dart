@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import 'package:both_of_us/models/user_info.dart';
+import 'package:both_of_us/providers/user_info.dart';
 import 'package:both_of_us/screens/edit.dart';
 import 'package:both_of_us/screens/intro.dart';
 import 'package:both_of_us/widgets/anniversary_card.dart';
@@ -21,25 +24,26 @@ const int yearAnniversaryColorHex = 0xffD8B4F8;
 const int hundredAnniversaryColorHex = 0xffCAEDFF;
 const int actionButtonColorHex = 0xffF1EFEF;
 
-class ResultScreen extends StatefulWidget {
+class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({
     super.key,
-    required this.meName,
-    required this.loverName,
-    required this.firstDay,
+    this.meName,
+    this.loverName,
+    this.firstDay,
   });
 
-  final String meName;
-  final String loverName;
-  final DateTime firstDay;
+  final String? meName;
+  final String? loverName;
+  final DateTime? firstDay;
 
   @override
-  State<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class _ResultScreenState extends ConsumerState<ResultScreen> {
   late FixedExtentScrollController controller;
 
+  UserInfo? _userInfo;
   List<Anniversary> _allAnniversaries = [];
   DateTime? _targetDate;
 
@@ -94,8 +98,8 @@ class _ResultScreenState extends State<ResultScreen> {
       return 'FIRST DAY';
     }
 
-    bool isYearAnniversary = anniversaryDate.month == widget.firstDay.month &&
-        anniversaryDate.day == widget.firstDay.day;
+    bool isYearAnniversary = anniversaryDate.month == firstDay.month &&
+        anniversaryDate.day == firstDay.day;
 
     if (isYearAnniversary) {
       final years = anniversaryDate.year - firstDay.year;
@@ -106,8 +110,10 @@ class _ResultScreenState extends State<ResultScreen> {
     return '$days일';
   }
 
-  Color _displayColor(DateTime anniversaryDate) {
-    if (anniversaryDate == widget.firstDay) {
+  Color _displayColor(DateTime anniversaryDate, DateTime firstDay) {
+    final userInfo = ref.read(userInfoProvider);
+
+    if (anniversaryDate == userInfo.firstDay) {
       return const Color(firstDayColorHex);
     }
 
@@ -115,16 +121,17 @@ class _ResultScreenState extends State<ResultScreen> {
       return const Color(currentDayColorHex);
     }
 
-    if (anniversaryDate.month == widget.firstDay.month &&
-        anniversaryDate.day == widget.firstDay.day) {
+    if (anniversaryDate.month == firstDay.month &&
+        anniversaryDate.day == firstDay.day) {
       return const Color(yearAnniversaryColorHex);
     } else {
       return const Color(hundredAnniversaryColorHex);
     }
   }
 
-  List<Anniversary> _getAnniversaryList(
-      DateTime targetDate, DateTime firstDay) {
+  List<Anniversary> _getAnniversaryList(DateTime targetDate) {
+    final firstDay = widget.firstDay ?? _userInfo!.firstDay!;
+
     Set<DateTime> hundredAnniversaries = _getAnniversaries(
         targetDate, firstDay, anniversaryInterval['hundred']!);
     Set<DateTime> yearAnniversaries =
@@ -139,7 +146,7 @@ class _ResultScreenState extends State<ResultScreen> {
       anniversaries.add(Anniversary(
           date: anniversaryDate,
           displayTitle: _displayDays(anniversaryDate, firstDay),
-          bgColor: _displayColor(anniversaryDate)));
+          bgColor: _displayColor(anniversaryDate, firstDay)));
     }
 
     anniversaries.sort((a, b) => a.date.compareTo(b.date));
@@ -148,8 +155,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   void _onSelectedItemChangedHandler() {
-    List<Anniversary> futureAnniversaries =
-        _getAnniversaryList(_targetDate!, widget.firstDay);
+    List<Anniversary> futureAnniversaries = _getAnniversaryList(_targetDate!);
 
     _targetDate =
         DateTime(_targetDate!.year + 1, _targetDate!.month, _targetDate!.day);
@@ -186,10 +192,15 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  void _navigateIntroScreen() async {
+  void _clearPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.clear();
+  }
+
+  void _navigateIntroScreen() {
+    ref.read(userInfoProvider.notifier).resetUserInfo();
+    _clearPrefs();
 
     if (!context.mounted) return;
 
@@ -204,9 +215,9 @@ class _ResultScreenState extends State<ResultScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => EditScreen(
-          meName: widget.meName,
-          loverName: widget.loverName,
-          firstDay: widget.firstDay,
+          meName: widget.meName ?? _userInfo!.meName!,
+          loverName: widget.loverName ?? _userInfo!.loverName!,
+          firstDay: widget.firstDay ?? _userInfo!.firstDay!,
         ),
       ),
     );
@@ -216,10 +227,11 @@ class _ResultScreenState extends State<ResultScreen> {
   void initState() {
     super.initState();
 
+    _userInfo = ref.read(userInfoProvider);
+
     controller = FixedExtentScrollController();
 
-    List<Anniversary> allAnniversaries =
-        _getAnniversaryList(nowDate, widget.firstDay);
+    List<Anniversary> allAnniversaries = _getAnniversaryList(nowDate);
 
     _targetDate = DateTime(nowDate.year + 1, nowDate.month, nowDate.day);
     _allAnniversaries = [...allAnniversaries];
@@ -242,7 +254,7 @@ class _ResultScreenState extends State<ResultScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(widget.meName),
+            Text(widget.meName ?? _userInfo!.meName!),
             const SizedBox(
               width: 10,
             ),
@@ -253,7 +265,7 @@ class _ResultScreenState extends State<ResultScreen> {
             const SizedBox(
               width: 10,
             ),
-            Text(widget.loverName),
+            Text(widget.loverName ?? _userInfo!.loverName!),
           ],
         ),
       ),

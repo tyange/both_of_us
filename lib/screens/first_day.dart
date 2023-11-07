@@ -1,27 +1,25 @@
+import 'package:both_of_us/models/user_info.dart';
+import 'package:both_of_us/providers/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
 
-class FirstDayScreen extends StatefulWidget {
+class FirstDayScreen extends ConsumerStatefulWidget {
   const FirstDayScreen({
     super.key,
-    required this.meName,
-    required this.loverName,
   });
 
-  final String meName;
-  final String loverName;
-
   @override
-  State<FirstDayScreen> createState() {
+  ConsumerState<FirstDayScreen> createState() {
     return _FirstDayScreenState();
   }
 }
 
-class _FirstDayScreenState extends State<FirstDayScreen> {
+class _FirstDayScreenState extends ConsumerState<FirstDayScreen> {
   DateTime? _selectedDate;
 
   final now = DateTime.now();
@@ -38,32 +36,34 @@ class _FirstDayScreenState extends State<FirstDayScreen> {
     setState(() {
       _selectedDate = pickedDate;
     });
+
+    ref.read(userInfoProvider.notifier).setFirstDay(_selectedDate!);
   }
 
-  void _navigateResultScreen() async {
+  void _saveDataInPrefs() async {
+    final userInfo = ref.read(userInfoProvider);
+
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(
       "bou_me_name",
-      widget.meName,
+      userInfo.meName!,
     );
     prefs.setString(
       "bou_lover_name",
-      widget.loverName,
+      userInfo.loverName!,
     );
     prefs.setString(
       "bou_first_day",
-      DateFormat('yyyy-MM-dd').format(_selectedDate!),
+      DateFormat('yyyy-MM-dd').format(userInfo.firstDay!),
     );
+  }
 
-    if (!context.mounted) return;
+  void _navigateResultScreen() {
+    _saveDataInPrefs();
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => ResultScreen(
-          meName: widget.meName,
-          loverName: widget.loverName,
-          firstDay: _selectedDate!,
-        ),
+        builder: (ctx) => ResultScreen(),
       ),
     );
   }

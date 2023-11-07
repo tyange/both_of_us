@@ -1,11 +1,14 @@
+import 'package:both_of_us/providers/user_info.dart';
 import 'package:both_of_us/screens/result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:both_of_us/models/user_info.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/widgets/validate_alert_dialog.dart';
 
-class EditScreen extends StatefulWidget {
+class EditScreen extends ConsumerStatefulWidget {
   const EditScreen({
     super.key,
     required this.meName,
@@ -18,10 +21,10 @@ class EditScreen extends StatefulWidget {
   final DateTime firstDay;
 
   @override
-  State<EditScreen> createState() => _EditScreenState();
+  ConsumerState<EditScreen> createState() => _EditScreenState();
 }
 
-class _EditScreenState extends State<EditScreen> {
+class _EditScreenState extends ConsumerState<EditScreen> {
   late TextEditingController _meNameController;
   late TextEditingController _loverNameController;
   late DateTime _firstDay;
@@ -56,13 +59,13 @@ class _EditScreenState extends State<EditScreen> {
   }
 
   void saveEdit() {
+    ref.read(userInfoProvider.notifier).setMeName(_meNameController.text);
+    ref.read(userInfoProvider.notifier).setLoverName(_loverNameController.text);
+    ref.read(userInfoProvider.notifier).setFirstDay(_firstDay);
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => ResultScreen(
-          meName: _meNameController.text,
-          loverName: _loverNameController.text,
-          firstDay: _firstDay,
-        ),
+        builder: (ctx) => ResultScreen(),
       ),
     );
   }

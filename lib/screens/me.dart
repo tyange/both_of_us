@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:both_of_us/providers/user_info.dart';
 import 'package:both_of_us/widgets/validate_alert_dialog.dart';
 import 'package:both_of_us/screens/lover.dart';
 import 'package:both_of_us/widgets/name_text_field_area.dart';
 
-class MeScreen extends StatefulWidget {
+class MeScreen extends ConsumerStatefulWidget {
   const MeScreen({super.key});
 
   @override
-  State<MeScreen> createState() => _MeScreenState();
+  ConsumerState<MeScreen> createState() => _MeScreenState();
 }
 
-class _MeScreenState extends State<MeScreen> {
+class _MeScreenState extends ConsumerState<MeScreen> {
   final _meNameController = TextEditingController();
 
   void _submittedMeName() {
@@ -27,11 +29,11 @@ class _MeScreenState extends State<MeScreen> {
       return;
     }
 
+    ref.read(userInfoProvider.notifier).setMeName(_meNameController.text);
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => LoverScreen(
-          meName: _meNameController.text,
-        ),
+        builder: (ctx) => const LoverScreen(),
       ),
     );
   }
