@@ -5,6 +5,7 @@ import 'package:both_of_us/providers/user_info.dart';
 import 'package:both_of_us/widgets/validate_alert_dialog.dart';
 import 'package:both_of_us/screens/lover.dart';
 import 'package:both_of_us/widgets/name_text_field_area.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MeScreen extends ConsumerStatefulWidget {
   const MeScreen({super.key});
@@ -50,8 +51,10 @@ class _MeScreenState extends ConsumerState<MeScreen> {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 100,
-        elevation: 5,
-        title: const Text('둘이서'),
+        title: Text(
+          '둘이서',
+          style: GoogleFonts.hahmlet(),
+        ),
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(

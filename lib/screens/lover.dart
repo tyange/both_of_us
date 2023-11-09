@@ -52,7 +52,6 @@ class _LoverScreenState extends ConsumerState<LoverScreen> {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 100,
-        elevation: 5,
         title: const Text('둘이서'),
       ),
       resizeToAvoidBottomInset: false,

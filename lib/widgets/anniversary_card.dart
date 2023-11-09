@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 
@@ -27,30 +28,28 @@ class AnniversaryCard extends StatelessWidget {
     return SizedBox(
       width: 300,
       child: Card(
-        elevation: 10,
+        elevation: 3,
         color: anniversary.bgColor,
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: [
-            Positioned(
-              top: 20,
-              child: Text(
-                DateFormat('yyyy - MM - dd').format(anniversary.date),
-                style: const TextStyle(
-                  fontFamily: 'SingleDay',
-                  fontSize: 20,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  anniversary.displayTitle,
+                  style: GoogleFonts.hahmlet(
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-            ),
-            Positioned(
-              top: 50,
-              child: Text(
-                anniversary.displayTitle,
-                style: const TextStyle(
-                  fontFamily: 'SingleDay',
-                  fontSize: 22,
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
+                Text(
+                  DateFormat('yyyy - MM - dd').format(anniversary.date),
+                  style: GoogleFonts.hahmlet(),
+                ),
+              ],
             ),
             Positioned(
               bottom: 0,

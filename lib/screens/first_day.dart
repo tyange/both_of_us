@@ -1,6 +1,7 @@
 import 'package:both_of_us/models/user_info.dart';
 import 'package:both_of_us/providers/user_info.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,7 +75,6 @@ class _FirstDayScreenState extends ConsumerState<FirstDayScreen> {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 100,
-        elevation: 5,
         title: const Text('둘이서'),
       ),
       resizeToAvoidBottomInset: false,
@@ -86,7 +86,10 @@ class _FirstDayScreenState extends ConsumerState<FirstDayScreen> {
                 onPressed: () {
                   _presentDatePicker(null);
                 },
-                child: const Text('처음 만난 날은?'),
+                child: Text(
+                  '처음 만난 날은?',
+                  style: GoogleFonts.hahmlet(),
+                ),
               )
             else ...[
               OutlinedButton(
@@ -100,7 +103,10 @@ class _FirstDayScreenState extends ConsumerState<FirstDayScreen> {
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: _navigateResultScreen,
-                child: const Text('기념일 확인하기'),
+                child: Text(
+                  '기념일 확인하기',
+                  style: GoogleFonts.hahmlet(),
+                ),
               )
             ]
           ],
