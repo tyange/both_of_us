@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:both_of_us/widgets/center_column.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NameTextFieldArea extends StatelessWidget {
   const NameTextFieldArea({
@@ -22,6 +23,7 @@ class NameTextFieldArea extends StatelessWidget {
           child: TextField(
             controller: controller,
             decoration: InputDecoration(
+              labelStyle: GoogleFonts.hahmlet(),
               labelText: labelText,
             ),
           ),
@@ -40,7 +42,10 @@ class NameTextFieldArea extends StatelessWidget {
             ),
             elevation: 5,
           ),
-          child: const Text('저장'),
+          child: Text(
+            '저장',
+            style: GoogleFonts.hahmlet(),
+          ),
         ),
       ],
     );

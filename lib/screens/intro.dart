@@ -1,6 +1,7 @@
 import 'package:both_of_us/screens/me.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
@@ -19,9 +20,11 @@ class IntroScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 100,
-        elevation: 5,
         automaticallyImplyLeading: false,
-        title: const Text('둘이서'),
+        title: Text(
+          '둘이서',
+          style: GoogleFonts.hahmlet(),
+        ),
       ),
       body: SafeArea(
         child: CenterColumn(
@@ -31,7 +34,10 @@ class IntroScreen extends StatelessWidget {
               onPressed: () {
                 onStart(context);
               },
-              child: const Text('시작'),
+              child: Text(
+                '시작',
+                style: GoogleFonts.hahmlet(),
+              ),
             ),
           ],
         ),

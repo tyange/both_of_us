@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -95,7 +96,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     int days = anniversaryDate.difference(firstDay).inDays;
 
     if (days == 0) {
-      return 'FIRST DAY';
+      return '첫날';
     }
 
     bool isYearAnniversary = anniversaryDate.month == firstDay.month &&
@@ -108,25 +109,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     }
 
     return '$days일';
-  }
-
-  Color _displayColor(DateTime anniversaryDate, DateTime firstDay) {
-    final userInfo = ref.read(userInfoProvider);
-
-    if (anniversaryDate == userInfo.firstDay) {
-      return const Color(firstDayColorHex);
-    }
-
-    if (anniversaryDate == nowDate) {
-      return const Color(currentDayColorHex);
-    }
-
-    if (anniversaryDate.month == firstDay.month &&
-        anniversaryDate.day == firstDay.day) {
-      return const Color(yearAnniversaryColorHex);
-    } else {
-      return const Color(hundredAnniversaryColorHex);
-    }
   }
 
   List<Anniversary> _getAnniversaryList(DateTime targetDate) {
@@ -143,10 +125,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     List<Anniversary> anniversaries = [];
 
     for (DateTime anniversaryDate in calculatedAnniversariesDate) {
-      anniversaries.add(Anniversary(
+      anniversaries.add(
+        Anniversary(
           date: anniversaryDate,
           displayTitle: _displayDays(anniversaryDate, firstDay),
-          bgColor: _displayColor(anniversaryDate, firstDay)));
+          bgColor: const Color(0xffFFFBF5),
+        ),
+      );
     }
 
     anniversaries.sort((a, b) => a.date.compareTo(b.date));
@@ -246,37 +231,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        elevation: 5,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(widget.meName ?? _userInfo!.meName!),
-            const SizedBox(
-              width: 10,
-            ),
-            const Icon(
-              Icons.favorite,
-              color: Colors.red,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(widget.loverName ?? _userInfo!.loverName!),
-          ],
-        ),
-      ),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         spacing: 20,
         childPadding: const EdgeInsets.all(8),
-        backgroundColor: const Color(currentDayColorHex),
+        backgroundColor: const Color(0xffffffff),
+        elevation: 5,
         children: [
           SpeedDialChild(
             child: const Icon(Icons.restart_alt),
+            labelStyle: GoogleFonts.hahmlet(),
             label: '초기화',
             onTap: () {
               _navigateIntroScreen();
@@ -284,6 +248,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.settings_backup_restore),
+            labelStyle: GoogleFonts.hahmlet(),
             label: '다시 설정하기',
             onTap: () {
               _navigateToEditScreen();
@@ -291,6 +256,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.first_page_rounded),
+            labelStyle: GoogleFonts.hahmlet(),
             label: '1일',
             onTap: () {
               _jumpToFirstDay();
@@ -298,28 +264,66 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ),
           SpeedDialChild(
               child: const Icon(Icons.today),
+              labelStyle: GoogleFonts.hahmlet(),
               label: '오늘',
               onTap: () {
                 _jumpToCurrentDay();
               }),
         ],
       ),
-      body: ListWheelScrollView(
-        onSelectedItemChanged: (value) {
-          if (_allAnniversaries.length == value + 1) {
-            _onSelectedItemChangedHandler();
-          }
-        },
-        itemExtent: extent,
-        squeeze: 0.5,
-        physics: const FixedExtentScrollPhysics(),
-        controller: controller,
-        children: [
-          for (final anniversary in _allAnniversaries)
-            AnniversaryCard(
-              anniversary: anniversary,
-            )
-        ],
+      body: SafeArea(
+        child: Stack(children: [
+          Positioned(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.meName ?? _userInfo!.meName!,
+                    style: GoogleFonts.hahmlet(
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    widget.loverName ?? _userInfo!.loverName!,
+                    style: GoogleFonts.hahmlet(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListWheelScrollView(
+            onSelectedItemChanged: (value) {
+              if (_allAnniversaries.length == value + 1) {
+                _onSelectedItemChangedHandler();
+              }
+            },
+            itemExtent: extent,
+            squeeze: 0.5,
+            physics: const FixedExtentScrollPhysics(),
+            controller: controller,
+            children: [
+              for (final anniversary in _allAnniversaries)
+                AnniversaryCard(
+                  anniversary: anniversary,
+                )
+            ],
+          ),
+        ]),
       ),
     );
   }

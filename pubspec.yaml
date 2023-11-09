@@ -40,6 +40,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   shared_preferences: ^2.2.1
   flutter_riverpod: ^2.4.5
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -79,10 +80,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: SingleDay
-      fonts:
-        - asset: assets/fonts/SingleDay-Regular.ttf
+  # fonts:
+  #   - family: SingleDay
+  #     fonts:
+  #       - asset: assets/fonts/SingleDay-Regular.ttf
     
   #
   # For details regarding fonts from package dependencies,
