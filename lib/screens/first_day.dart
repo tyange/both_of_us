@@ -1,11 +1,10 @@
-import 'package:both_of_us/models/user_info.dart';
-import 'package:both_of_us/providers/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:both_of_us/providers/user_info.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/screens/result.dart';
 
@@ -64,7 +63,7 @@ class _FirstDayScreenState extends ConsumerState<FirstDayScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => ResultScreen(),
+        builder: (ctx) => const ResultScreen(),
       ),
     );
   }
