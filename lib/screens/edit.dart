@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import 'package:both_of_us/models/user_info.dart';
 import 'package:both_of_us/widgets/center_column.dart';
 import 'package:both_of_us/widgets/validate_alert_dialog.dart';
 
@@ -65,7 +64,7 @@ class _EditScreenState extends ConsumerState<EditScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => ResultScreen(),
+        builder: (ctx) => const ResultScreen(),
       ),
     );
   }
