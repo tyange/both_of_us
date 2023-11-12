@@ -13,12 +13,12 @@ class AnniversaryCard extends StatelessWidget {
 
   final Anniversary anniversary;
 
-  Event buildEvent(DateTime anniversaryDate) {
+  Event buildEvent(Anniversary anniversary) {
     return Event(
-      title: 'Test eventeee',
-      description: 'example',
-      startDate: anniversaryDate,
-      endDate: anniversaryDate,
+      title: anniversary.displayTitle,
+      description: anniversary.displayTitle,
+      startDate: anniversary.date,
+      endDate: anniversary.date,
       allDay: false,
     );
   }
@@ -58,7 +58,7 @@ class AnniversaryCard extends StatelessWidget {
                 icon: const Icon(Icons.calendar_month),
                 onPressed: () {
                   Add2Calendar.addEvent2Cal(
-                    buildEvent(anniversary.date),
+                    buildEvent(anniversary),
                   );
                 },
               ),
