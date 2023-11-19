@@ -115,9 +115,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final firstDay = widget.firstDay ?? _userInfo!.firstDay!;
 
     Set<DateTime> hundredAnniversaries = _getAnniversaries(
-        targetDate, firstDay, anniversaryInterval['hundred']!);
-    Set<DateTime> yearAnniversaries =
-        _getAnniversaries(targetDate, firstDay, anniversaryInterval['year']!);
+        targetDate == firstDay
+            ? targetDate.add(const Duration(days: 365))
+            : targetDate,
+        firstDay,
+        anniversaryInterval['hundred']!);
+    Set<DateTime> yearAnniversaries = _getAnniversaries(
+        targetDate == firstDay
+            ? targetDate.add(const Duration(days: 365))
+            : targetDate,
+        firstDay,
+        anniversaryInterval['year']!);
 
     List<DateTime> calculatedAnniversariesDate =
         yearAnniversaries.union(hundredAnniversaries).toList();
@@ -218,7 +226,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
     List<Anniversary> allAnniversaries = _getAnniversaryList(nowDate);
 
-    _targetDate = DateTime(nowDate.year + 1, nowDate.month, nowDate.day);
+    final firstDay = widget.firstDay ?? _userInfo!.firstDay!;
+
+    _targetDate = DateTime(
+        nowDate == firstDay ? nowDate.year + 2 : nowDate.year + 1,
+        nowDate.month,
+        nowDate.day);
     _allAnniversaries = [...allAnniversaries];
   }
 
@@ -309,6 +322,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ListWheelScrollView(
             onSelectedItemChanged: (value) {
               if (_allAnniversaries.length == value + 1) {
+                print('onSelectedItemChanged');
                 _onSelectedItemChangedHandler();
               }
             },
