@@ -17,7 +17,7 @@ const Map<String, int> anniversaryInterval = {
   "year": 365,
 };
 
-const double extent = 120.0;
+const double extent = 100.0;
 
 const int firstDayColorHex = 0xffFBF0B2;
 const int currentDayColorHex = 0xffFFC7EA;
@@ -287,8 +287,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       body: SafeArea(
         child: Stack(children: [
           Positioned(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30),
+            child: Container(
+              margin: const EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -319,23 +319,26 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               ),
             ),
           ),
-          ListWheelScrollView(
-            onSelectedItemChanged: (value) {
-              if (_allAnniversaries.length == value + 1) {
-                print('onSelectedItemChanged');
-                _onSelectedItemChangedHandler();
-              }
-            },
-            itemExtent: extent,
-            squeeze: 0.5,
-            physics: const FixedExtentScrollPhysics(),
-            controller: controller,
-            children: [
-              for (final anniversary in _allAnniversaries)
-                AnniversaryCard(
-                  anniversary: anniversary,
-                )
-            ],
+          Container(
+            margin: const EdgeInsets.all(50),
+            child: ListWheelScrollView(
+              onSelectedItemChanged: (value) {
+                if (_allAnniversaries.length == value + 1) {
+                  print('onSelectedItemChanged');
+                  _onSelectedItemChangedHandler();
+                }
+              },
+              itemExtent: extent,
+              squeeze: 0.7,
+              physics: const FixedExtentScrollPhysics(),
+              controller: controller,
+              children: [
+                for (final anniversary in _allAnniversaries)
+                  AnniversaryCard(
+                    anniversary: anniversary,
+                  )
+              ],
+            ),
           ),
         ]),
       ),
