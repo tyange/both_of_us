@@ -44,6 +44,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Both of us',
       theme: ThemeData(
         useMaterial3: true,
